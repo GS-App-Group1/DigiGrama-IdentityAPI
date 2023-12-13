@@ -1,104 +1,100 @@
-openapi: "3.0.0"
+openapi: 3.0.1
 info:
-  title: IdentityAPI
-  version: 1.0.0
+  title: Identity
+  version: 0.1.0
+servers:
+  - url: "{server}:{port}/identity"
+    variables:
+      server:
+        default: http://localhost
+      port:
+        default: "9090"
 paths:
-  /getIdentityFromNIC/:
+  /getIdentityFromNIC:
     get:
-      summary: Get the identity of the user with nic
-      description: Get the identity records from the identityAPI database of the user
+      summary: A resource for getting the Identity of a given nic
+      operationId: getGetidentityfromnic
       parameters:
-        - in: query
-          name: nic
-          description: nic of the user in the record
+        - name: nic
+          in: query
+          description: NIC of the person
           required: true
           schema:
             type: string
       responses:
         "200":
-          description: OK
+          description: Ok
           content:
             application/json:
               schema:
                 type: object
-                properties:
-                  _id:
-                    type: string
-                  nic:
-                    type: integer
-                  name:
-                    type: string
-                  dob:
-                    type: date
-                  phoneNumber:
-                    type: string
-                  isMarried:
-                    type: boolean
-                  isEmployed:
-                    type: boolean
-
-        "404":
-          description: Not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  description:
-                    type: string
-
         "500":
-          description: Internal Server Error
+          description: Internal server error
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-
-      deprecated: false
-      security: []
-
-  /getGSDivisionFromNIC/:
+                $ref: "#/components/schemas/ErrorPayload"
+  /getGSDivisionFromNIC:
     get:
-      summary: Get the GS Division of the user with nic
-      description: Get the GS Division records from the identityAPI database of the user
+      operationId: getGetgsdivisionfromnic
       parameters:
-        - in: query
-          name: nic
-          description: nic of the user in the record
+        - name: nic
+          in: query
           required: true
           schema:
             type: string
       responses:
         "200":
-          description: OK
+          description: Ok
           content:
             application/json:
               schema:
                 type: object
-                properties:
-                  gsDivision:
-                    type: string
-
-        "404":
-          description: Not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  description:
-                    type: string
-
         "500":
-          description: Internal Server Error
+          description: Internal server error
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-
-      deprecated: false
-      security: []
+                $ref: "#/components/schemas/ErrorPayload"
+  /liveness:
+    get:
+      operationId: getLiveness
+      responses:
+        "200":
+          description: Ok
+  /readiness:
+    get:
+      operationId: getReadiness
+      responses:
+        "200":
+          description: Ok
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorPayload"
+components:
+  schemas:
+    ErrorPayload:
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Reason phrase
+        path:
+          type: string
+          description: Request path
+        method:
+          type: string
+          description: Method type of the request
+        message:
+          type: string
+          description: Error message
+        timestamp:
+          type: string
+          description: Timestamp of the error
+        status:
+          type: integer
+          description: Relevant HTTP status code
+          format: int32
