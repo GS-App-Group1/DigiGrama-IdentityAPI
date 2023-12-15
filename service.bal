@@ -31,6 +31,7 @@ service /identity on new http:Listener(9090) {
     # + nic - NIC of the person
     # + return - Identity or error
     resource function get getIdentityFromNIC(string nic) returns json|error {
+        _ = check validateNIC(nic);
         stream<Identity, error?>|mongodb:Error IdentityStream = check self.databaseClient->find(collection, database, {nic: nic});
         Identity[]|error identities = from Identity Identity in check IdentityStream
             select Identity;
