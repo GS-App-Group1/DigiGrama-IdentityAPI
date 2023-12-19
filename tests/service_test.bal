@@ -14,9 +14,9 @@ function beforeSuiteFunc() {
 // Test function
 
 @test:Config {}
-function testServiceWithProperNIC() {
-    json|error response_1 = testClient->get("/identity/getIdentityFromNIC/?nic=200005703120");
-    json|error response_2 = testClient->get("/identity/getGSDivisionFromNIC/?nic=200005703120");
+function testServiceWithProperNIC() returns error? {
+    json|error response_1 = check testClient->get("/identity/getIdentityFromNIC/?nic=200005703120");
+    json|error response_2 = check testClient->get("/identity/getGSDivisionFromNIC/?nic=200005703120");
     json[] responseJson_1 = [{"_id": "6577d59cd8bb5abb8ec323fa", "nic": "200005703120", "name": "Themira", "dob": "31.03.2000", "phoneNumber": "0766652613", "isMarried": false, "isEmployed": true, "gsDivision": "Sooriyagoda"}];
     json responseJson_2 = {"gsDivision": "Sooriyagoda"};
     test:assertEquals(response_1, responseJson_1);
